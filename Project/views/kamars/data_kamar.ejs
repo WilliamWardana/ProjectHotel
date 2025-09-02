@@ -1,0 +1,57 @@
+<%- include('../layout/navbar') %>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(#3d2f14, #dbab51);">
+    <div class="card p-5 shadow-lg" 
+         style="width: 60%; max-width: 1200px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-white">Data Kamar</h2>
+            <a href="/data_kamar/add_kamar" class="btn btn-primary btn-custom">+ Tambah Data</a>
+        </div>
+
+        <div class="card glass-card p-4 shadow-lg">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-white">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nomor Kamar</th>
+                            <th>Tipe Kamar</th>
+                            <th>Harga per Malam</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (kamarData && kamarData.length > 0) { %>
+                            <% kamarData.forEach((kamar, i) => { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= kamar.nomor_kamar %></td>
+                                    <td><%= kamar.tipe_kamar.charAt(0).toUpperCase() + kamar.tipe_kamar.slice(1) %></td>
+                                    <td>Rp <%= kamar.harga_per_malam.toLocaleString('id-ID') %></td>
+                                    <% if (kamar.status === 'empty') {%>
+                                        <td><span class="badge bg-primary p-2">Tersedia</span></td>
+                                    <% } else { %>
+                                        <td><span class="badge bg-warning p-2">Terisi</span></td>
+                                    <% } %>
+                                    <td>
+                                        <a href="/data_kamar/edit_kamar/<%= kamar.id %>" class="btn btn-sm btn-info">Edit</a>
+                                        <a href="/data_kamar/delete_kamar/<%= kamar.id %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin mau hapus?')">Delete</a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" class="text-center">Belum ada data</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Optional: Include FontAwesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

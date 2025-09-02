@@ -1,0 +1,44 @@
+<%- include('../layout/navbar') %>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(#3d2f14, #dbab51);">
+    <div class="card p-5 shadow-lg" 
+         style="width: 45%; max-width: 950px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
+        
+        <h2 class="text-center mb-4 fw-bold text-white">Tambah kamar</h2>
+
+        <form method="post" action="/data_kamar/add_kamar">
+
+            <div class="mb-3 position-relative">
+                <label for="nomor_kamar" class="form-label text-white">Nomor Kamar</label>
+                <input type="text" class="form-control ps-5" id="nomor_kamar" name="nomor_kamar" placeholder="Masukan Nomor Kamar" required style="border-radius: 10px; padding: 12px;">
+                <i class="fas fa-user position-absolute" style="top: 38px; left: 15px; color: black;"></i>
+            </div>
+
+            <div class="mb-3 position-relative">
+                <label for="tipe_kamar" class="form-label text-white">Tipe Kamar</label>
+                <input type="text" class="form-control ps-5" id="tipe_kamar" name="tipe_kamar" placeholder="Masukan Tipe Kamar" required style="border-radius: 10px; padding: 12px;">
+                <i class="fas fa-lock position-absolute" style="top: 38px; left: 15px; color: black;"></i>
+            </div>
+
+            <div class="mb-3 position-relative">
+                <label for="harga_per_malam" class="form-label text-white">Harga Permalam</label>
+                <input type="text" class="form-control ps-5" id="harga_per_malam" name="harga_per_malam" placeholder="Masukan Harga Permalam" required style="border-radius: 10px; padding: 12px;">
+                <i class="fas fa-lock position-absolute" style="top: 38px; left: 15px; color: black;"></i>
+            </div>
+
+            <div class="mb-3 position-relative">
+                <label for="foto_kamar" class="form-label text-white">Upload Foto</label>
+                <input type="file" class="form-control ps-5" id="foto_kamar" name="foto_kamar" required style="border-radius: 10px; padding: 12px;" accept="image/*">
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary w-45" style="border-radius: 12px; font-weight: 600;">Submit</button>
+                <a href="/data_kamar" class="btn btn-light w-45" style="border-radius: 12px; font-weight: 600;">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- Optional: Include FontAwesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

@@ -1,0 +1,49 @@
+body.login-page {
+    background: url('/img/background.jpg') no-repeat center center fixed; 
+    height: 100vh; 
+    display: flex; 
+    position: relative;
+    align-items: center;
+    background-size: cover; 
+    justify-content: center; 
+}
+
+body.about-page {
+  background: #222;
+}
+
+
+/* Ini User Page */
+.user-page body {
+  background-color: #f4f6f9;
+}
+
+.user-page .sidebar {
+  height: 100vh;
+  background: #343a40;
+  color: white;
+  padding-top: 1rem;
+}
+
+.user-page .sidebar a {
+  color: #adb5bd;
+  text-decoration: none;
+  display: block;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.user-page .sidebar a:hover {
+  background: #495057;
+  color: #fff;
+}
+
+.user-page .content {
+  padding: 20px;
+}
+
+.user-page .card-custom {
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+

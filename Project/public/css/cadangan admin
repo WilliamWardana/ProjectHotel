@@ -1,0 +1,32 @@
+
+
+body.admin-page {
+  background: linear-gradient(135deg, #ffffff, #dbab51);
+}
+
+.glass-card.admin-page {
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-card table.admin-page {
+  color: #fff;
+}
+
+.glass-card thead {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.glass-card tbody tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transition: 0.3s;
+}
+
+.btn-custom {
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 8px 16px;
+}
