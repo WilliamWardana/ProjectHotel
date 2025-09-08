@@ -1,70 +1,74 @@
-<div class="container my-4">
-  <!-- Welcome -->
-  <div class="mb-4">
-    <h2>Halo, <span class="text-primary"><%= user.name %> 👋</span></h2>
-    <p>Selamat datang di hotel. Silakan pilih kamar atau cek reservasi Anda.</p>
-  </div>
+<%- include('layout/navbar') %>
 
-  <!-- Kamar tersedia -->
-  <h4 class="mb-3">Kamar Tersedia</h4>
-  <div class="row g-3">
-    <% dataKamar.forEach((kamar) => { %>
-      <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title"><%= kamar.tipe_kamar.charAt(0).toUpperCase() + kamar.tipe_kamar.slice(1) %></h5>
-            <p class="card-text">Rp <%= kamar.harga_per_malam.toLocaleString() %> / malam</p>
-            <a href="/book/<%= kamar.id %>" class="btn btn-primary mt-auto">Pesan Sekarang</a>
-          </div>
+<section id="hero" class="hero position-relative">
+  <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-inner">
+
+      <div class="carousel-item active" style="background-image: url('/img/background-main1.jpg');">
+        <div class="overlay"></div>
+        <div class="hero-text text-center text-white">
+          <h1 class="fw-bold">Selamat Datang di Hotel Bintang 5 ✨</h1>
+          <p class="lead">Kemewahan dan kenyamanan terbaik untuk liburan Anda</p>
+          <a href="#info" class="btn btn-light mt-3">Jelajahi</a>
         </div>
       </div>
-    <% }) %>
-  </div>
 
-  <!-- Reservasi Saya -->
-  <h4 class="mt-5 mb-3">Reservasi Saya</h4>
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <table class="table table-hover mb-0">
-        <thead>
-          <tr>
-            <th>Kamar</th>
-            <th>Check-in</th>
-            <th>Check-out</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (bookings.length > 0) { %>
-            <% bookings.forEach(booking => { %>
-              <tr>
-                <td><%= booking.roomName %></td>
-                <td><%= booking.checkIn %></td>
-                <td><%= booking.checkOut %></td>
-                <td>
-                  <% if (booking.status === "confirmed") { %>
-                    <span class="badge bg-success">Dikonfirmasi</span>
-                  <% } else if (booking.status === "pending") { %>
-                    <span class="badge bg-warning">Menunggu</span>
-                  <% } else { %>
-                    <span class="badge bg-secondary">Selesai</span>
-                  <% } %>
-                </td>
-              </tr>
-            <% }) %>
-          <% } else { %>
-            <tr>
-              <td colspan="4" class="text-center text-muted">Belum ada reservasi</td>
-            </tr>
-          <% } %>
-        </tbody>
-      </table>
+      <div class="carousel-item" style="background-image: url('/img/background-main2.jpg');">
+        <div class="overlay"></div>
+        <div class="hero-text text-center text-white">
+          <h1 class="fw-bold">Pemandangan Indah</h1>
+          <p class="lead">Nikmati panorama pantai dan kota dari kamar Anda</p>
+          <a href="#info" class="btn btn-light mt-3">Lihat Fasilitas</a>
+        </div>
+      </div>
     </div>
   </div>
+</section>
 
-  <!-- Promo -->
-  <h4 class="mt-5 mb-3">🔥 Promo & Notifikasi</h4>
-  <% promos.forEach(promo => { %>
-    <div class="alert alert-info"><%= promo.message %></div>
-  <% }) %>
-</div>
+<section class="info container-fluid py-5 d-flex align-items-center" id="info">
+  <div class="container text-center text-dark">
+    <h2 class="fw-bold">Tipe Kamar Hotel Kami</h2>
+    <p class="lead">
+      Hotel kami menawarkan fasilitas mewah serta pelayanan terbaik
+      <br>
+      dengan berbagai tingkat.
+    </p>
+    <div class="row mt-5">
+
+      <% if (tipeData && tipeData.length > 0) {%>
+          <% tipeData.forEach((tipe) => {%>
+              <% if (tipe.tipe_kamar == 'reguler') {%>
+                <div class="col-md-4">
+                  <div class="card shadow-lg border-0 p-5">
+                    <h4><%= tipe.tipe_kamar.charAt(0).toUpperCase() + tipe.tipe_kamar.slice(1) %></h4>
+                    <p><%= tipe.deskripsi %></p>
+                    <a href="/reservasi?level=reguler" class="btn btn-light mt-3">Jelajahi</a>
+                  </div>
+                </div>
+              <% } else if (tipe.tipe_kamar == 'vvip') { %>
+                <div class="col-md-4">
+                  <div class="card shadow-lg border-0 p-5">
+                    <h4><%= tipe.tipe_kamar.toUpperCase()%></h4>
+                    <h4></h4>
+                    <p><%= tipe.deskripsi %></p>
+                    <a href="/reservasi?level=vvip" class="btn btn-light mt-3">Jelajahi</a>
+                  </div>
+                </div>
+              <% } else { %>
+                <div class="col-md-4">
+                  <div class="card shadow-lg border-0 p-5">
+                    <h4><%= tipe.tipe_kamar.toUpperCase()%></h4>
+                    <h4></h4>
+                    <p><%= tipe.deskripsi %></p>
+                    <a href="/reservasi?level=vip" class="btn btn-light mt-3">Jelajahi</a>
+                  </div>
+                </div>
+              <% } %>
+          <% }) %>
+      <% } else { %>
+          <option value="#">Belum ada tipe kamar</option>
+      <% } %>
+
+    </div>
+  </div>
+</section>

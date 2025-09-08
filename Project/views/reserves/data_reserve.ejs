@@ -1,0 +1,109 @@
+<%- include('../layout/navbar') %>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(#3d2f14, #dbab51);">
+    <div class="card p-5 shadow-lg" 
+         style="width: 90%; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-white">Data Reservasi</h2>
+        </div>
+
+        <div class="table-responsive no-scrollbar">
+            <table class="table table-hover align-middle text-white">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Pemesan</th>
+                    <th>Telepon</th>
+                    <th>Email</th>
+                    <th>Foto KTP</th>
+                    <th>Checkin</th>
+                    <th>Checkout</th>
+                    <th>Total Malam</th>
+                    <th>Tipe Kamar</th>
+                    <th>Tipe Pembayaran</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% if (reservesData && reservesData.length > 0) { %>
+                    <% reservesData.forEach((reserves, i) => { %>
+                    <tr>
+                        <td><%= i + 1 %></td>
+                        <td><%= reserves.nama_lengkap %></td>
+                        <td><%= reserves.telepon %></td>
+                        <td><%= reserves.email %></td>
+                        <td>ini fotoKtp</td>
+                        <td><%= reserves.checkin %></td>
+                        <td><%= reserves.checkout %></td>
+                        <td><%= reserves.total_malam %></td>
+                        <td><%= reserves.tipe_kamar %></td>
+                        <td><%= reserves.tipe_pembayaran %></td>
+                        <td><%= reserves.status %></td>
+                        <td>
+                        <a href="/data_reservasi/edit_reservasi/<%= reserves.id %>" class="btn btn-sm btn-info">Edit</a>
+                        <a href="/data_reservasi/delete_reservasi/<%= reserves.id %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin mau hapus?')">Delete</a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                    <td colspan="12" class="text-center">Belum ada data</td>
+                    </tr>
+                <% } %>
+                </tbody>
+            </table>
+            </div>
+
+
+    </div>
+</div>
+
+<!-- Optional: Include FontAwesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<style>
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  scrollbar-width: none;
+}
+
+.table-responsive::-webkit-scrollbar {
+  display: none;
+}
+
+.table {
+  margin-bottom: 0; /* biar rapih sama radius */
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table th,
+.table td {
+  white-space: nowrap;
+  vertical-align: middle;
+  text-align: center;
+  padding: 10px 15px;
+}
+
+/* Sudut atas */
+.table thead tr:first-child th:first-child {
+  border-top-left-radius: 12px;
+}
+.table thead tr:first-child th:last-child {
+  border-top-right-radius: 12px;
+}
+
+/* Sudut bawah */
+.table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+.table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+</style>

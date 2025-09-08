@@ -54,10 +54,6 @@ app.get('/staff', isLoggedIn, checkRole('staff'), (req, res) => {
     res.send("Selamat datang di halaman Staff!");
 });
 
-app.get('/user', isLoggedIn, checkRole('user'), (req, res) => {
-    res.send("Selamat datang di halaman User!");
-});
-
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.send("Anda sudah logout.");

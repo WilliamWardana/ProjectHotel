@@ -1,0 +1,108 @@
+<div class="container py-5">
+  <h2 class="text-center mb-4 text-white">Reservasi Kamar</h2>
+  
+  <form action="/reservasi" method="POST" enctype="multipart/form-data" class="card shadow-lg p-4 bg-light" style="border-radius: 12px;">
+
+    <input type="hidden" name="tipe_kamar" value="<%= kamarMap.tipe_kamar%>">
+    <input type="hidden" name="id_kamar" value="<%= kamarMap.id%>">
+    
+    <!-- Pilih Tanggal -->
+    <div class="mb-3">
+      <label for="tanggal" class="form-label">Tanggal Reservasi</label>
+      <input type="text" id="tanggal" name="tanggal" class="form-control" placeholder="Pilih rentang tanggal" required autocomplete="off">
+    </div>
+
+    <!-- Nama -->
+    <div class="mb-3">
+      <label for="nama" class="form-label">Nama Lengkap</label>
+      <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan nama lengkap" required>
+    </div>
+
+    <!-- Nomor Telepon -->
+    <div class="mb-3">
+      <label for="telepon" class="form-label">Nomor Telepon</label>
+      <input type="tel" id="telepon" name="telepon" class="form-control" placeholder="08xxxxxx" required>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" id="email" name="email" class="form-control" placeholder="email@example.com" required>
+    </div>
+
+    <!-- Foto KTP -->
+    <div class="mb-3">
+      <label for="ktp" class="form-label">Upload Foto KTP</label>
+      <input type="file" id="ktp" name="ktp" class="form-control" accept="image/*" required>
+    </div>
+
+    <!-- Metode Pembayaran -->
+    <div class="mb-3">
+      <label class="form-label">Tipe Pembayaran</label>
+      <select id="pembayaran" name="pembayaran" class="form-control" required>
+        <option value="" disabled selected hidden>Pilih metode</option>
+        <option value="dp">DP 50%</option>
+        <option value="lunas">Bayar Lunas</option>
+      </select>
+    </div>
+
+    <!-- Harga Preview -->
+    <div class="mb-3">
+      <label class="form-label">Total Bayar</label>
+      <input type="text" id="totalBayar" class="form-control" readonly value="">
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Reservasi Sekarang</button>
+  </form>
+</div>
+
+<!-- Litepicker CSS & JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" />
+<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+
+<script>
+  const picker = new Litepicker({
+    element: document.getElementById('tanggal'),
+    singleMode: false,
+    format: 'YYYY-MM-DD',
+    numberOfMonths: 2,
+    numberOfColumns: 2,
+    minDate: new Date()
+  });
+
+  const hargaKamar = parseInt("<%= kamarMap.harga_per_malam %>"); 
+
+  function hitungMalam(range) {
+    if (!range || range.length < 2) return 0;
+    const start = new Date(range[0]);
+    const end = new Date(range[1]);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  }
+
+  function updateTotal() {
+    const range = document.getElementById('tanggal').value.split(' - ');
+    const malam = hitungMalam(range);
+    let metode = document.getElementById('pembayaran').value;
+    let total = 0;
+
+    if (malam > 0) {
+      if (metode === 'dp') {
+        total = hargaKamar * malam * 0.5;
+      } else if (metode === 'lunas') {
+        total = hargaKamar * malam;
+      }
+    }
+
+    document.getElementById('totalBayar').value =
+      total > 0 ? "Rp " + total.toLocaleString('id-ID') : "";121
+  }
+
+  // Update ketika tanggal dipilih
+  picker.on('selected', () => updateTotal());
+
+  // Update ketika metode pembayaran dipilih
+  document.getElementById('pembayaran').addEventListener('change', updateTotal);
+</script>
+

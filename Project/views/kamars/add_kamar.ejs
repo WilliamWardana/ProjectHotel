@@ -16,8 +16,19 @@
 
             <div class="mb-3 position-relative">
                 <label for="tipe_kamar" class="form-label text-white">Tipe Kamar</label>
-                <input type="text" class="form-control ps-5" id="tipe_kamar" name="tipe_kamar" placeholder="Masukan Tipe Kamar" required style="border-radius: 10px; padding: 12px;">
-                <i class="fas fa-lock position-absolute" style="top: 38px; left: 15px; color: black;"></i>
+                <select name="tipe_kamar" class="form-control ps-5" id="tipe_kamar" required style="border-radius: 10px; padding: 12px;">
+                    <% if (tipeData && tipeData.length > 0) {%>
+                        <% tipeData.forEach((tipe) => {%>
+                            <% if (tipe.tipe_kamar == 'reguler') {%>
+                                <option value="<%= tipe.id %>"><%= tipe.tipe_kamar.charAt(0).toUpperCase() + tipe.tipe_kamar.slice(1) %></option>
+                            <% } else { %>
+                                <option value="<%= tipe.id %>"><%= tipe.tipe_kamar.toUpperCase() %></option>
+                            <% } %>
+                        <% }) %>
+                    <% } else { %>
+                        <option value="#">Belum ada tipe kamar</option>
+                    <% } %>
+                </select>
             </div>
 
             <div class="mb-3 position-relative">
@@ -26,9 +37,10 @@
                 <i class="fas fa-lock position-absolute" style="top: 38px; left: 15px; color: black;"></i>
             </div>
 
+            <!-- ini belum required -->
             <div class="mb-3 position-relative">
                 <label for="foto_kamar" class="form-label text-white">Upload Foto</label>
-                <input type="file" class="form-control ps-5" id="foto_kamar" name="foto_kamar" required style="border-radius: 10px; padding: 12px;" accept="image/*">
+                <input type="file" class="form-control ps-5" id="foto_kamar" name="foto_kamar" style="border-radius: 10px; padding: 12px;" accept="image/*">
             </div>
 
             <div class="d-flex justify-content-between">
