@@ -23,7 +23,6 @@
                     <th>Tipe Kamar</th>
                     <th>Tipe Pembayaran</th>
                     <th>Status</th>
-                    <th>Aksi</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -34,17 +33,13 @@
                         <td><%= reserves.nama_lengkap %></td>
                         <td><%= reserves.telepon %></td>
                         <td><%= reserves.email %></td>
-                        <td>ini fotoKtp</td>
+                        <td><img src="/uploads/ktp/<%= reserves.foto_ktp %>" alt="KTP" width="100"></td>
                         <td><%= reserves.checkin %></td>
                         <td><%= reserves.checkout %></td>
                         <td><%= reserves.total_malam %></td>
                         <td><%= reserves.tipe_kamar %></td>
                         <td><%= reserves.tipe_pembayaran %></td>
                         <td><%= reserves.status %></td>
-                        <td>
-                        <a href="/data_reservasi/edit_reservasi/<%= reserves.id %>" class="btn btn-sm btn-info">Edit</a>
-                        <a href="/data_reservasi/delete_reservasi/<%= reserves.id %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin mau hapus?')">Delete</a>
-                        </td>
                     </tr>
                     <% }) %>
                 <% } else { %>
@@ -78,7 +73,7 @@
 }
 
 .table {
-  margin-bottom: 0; /* biar rapih sama radius */
+  margin-bottom: 0;
   border-collapse: separate;
   border-spacing: 0;
 }
@@ -87,19 +82,17 @@
 .table td {
   white-space: nowrap;
   vertical-align: middle;
-  text-align: center;
   padding: 10px 15px;
 }
 
-/* Sudut atas */
 .table thead tr:first-child th:first-child {
   border-top-left-radius: 12px;
 }
+
 .table thead tr:first-child th:last-child {
   border-top-right-radius: 12px;
 }
 
-/* Sudut bawah */
 .table tbody tr:last-child td:first-child {
   border-bottom-left-radius: 12px;
 }

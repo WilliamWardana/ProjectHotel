@@ -37,7 +37,18 @@ const db = await mysql.createConnection({
     queueLimit: 0
 });
 
-const userInfo = await db.execute("SELECT * FROM users");
+const storageKTP = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'public/uploads/ktp'),
+    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+});
+
+const storageKamar = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'public/uploads/kamar'),
+    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+});
+
+const uploadKTP = multer({ storage: storageKTP });
+const uploadKamar = multer({ storage: storageKamar });
 
 function isLoggedIn(req, res, next) {
     if (req.session.user) return next();
@@ -64,7 +75,17 @@ function formatDate(date) {
 }
 
 app.get('/', (req, res) => {
-    res.redirect('/login');
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+
+    if (req.session.user.role === 'admin') {
+        return res.redirect('/data_user');
+    } else if (req.session.user.role === 'staff') {
+        return res.redirect('/staff');
+    } else {
+        return res.redirect('/dashboard');
+    }
 });
 
 app.get('/login', (req, res) => {
@@ -215,11 +236,24 @@ app.get('/data_kamar/add_kamar', isLoggedIn, checkRole('admin'), async (req, res
         });
 });
 
-app.post('/data_kamar/add_kamar', isLoggedIn, checkRole('admin'), async (req, res) => {
-    const { nomor_kamar, tipe_kamar, harga_per_malam } = req.body;
+app.post('/data_kamar/add_kamar', isLoggedIn, checkRole('admin'), uploadKamar.single('foto_kamar'), async (req, res) => {
+    const { nomor_kamar, tipe_kamar, harga_per_malam, } = req.body;
+    const fotoKamar = req.file;
+
+    if (!fotoKamar) {
+        return res.status(400).send("Gagal mengunggah foto kamar. Silakan coba lagi.");
+    }
+
+    const [rows] = await db.execute("SELECT tipe_kamar FROM tipe_kamar WHERE id = ?", [tipe_kamar])
+
+    if (rows.length === 0) {
+        return res.status(400).send("Tipe kamar tidak valid");
+    }
+
+    const tipeKamar = rows[0].tipe_kamar;
 
     try {
-        await db.execute('INSERT INTO kamar (nomor_kamar, tipe_kamar, harga_per_malam, created_at) VALUES (?, ?, ?, ?)', [nomor_kamar, tipe_kamar, harga_per_malam, new Date()]);
+        await db.execute('INSERT INTO kamar (nomor_kamar, tipe_kamar, harga_per_malam, foto_kamar, created_at) VALUES (?, ?, ?, ?, ?)', [nomor_kamar, tipeKamar, harga_per_malam, fotoKamar.filename, new Date()]);
         res.redirect('/data_kamar');
     } catch (err) {
         console.error(err);
@@ -247,15 +281,30 @@ app.get('/data_kamar/edit_kamar/:id', isLoggedIn, checkRole('admin'), async (req
     }
 });
 
-app.post('/data_kamar/edit_kamar/:id', isLoggedIn, checkRole('admin'), async (req, res) => {
+app.post('/data_kamar/edit_kamar/:id', isLoggedIn, checkRole('admin'), uploadKamar.single('foto_kamar'), async (req, res) => {
     const { nomor_kamar, tipe_kamar, harga_per_malam, status } = req.body;
     const { id } = req.params;
+    const fotoKamar = req.file;
+
+    if (fotoKamar) {
+        try {
+            await db.execute(
+                'UPDATE kamar SET nomor_kamar=?, tipe_kamar=?, harga_per_malam=?, foto_kamar=?, status=? WHERE id=?',
+                [nomor_kamar, tipe_kamar, harga_per_malam, fotoKamar.filename, status, id]
+            );
+            return res.redirect('/data_kamar');
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send("Terjadi kesalahan server");
+        }
+    }
 
     try {
         await db.execute(
             'UPDATE kamar SET nomor_kamar=?, tipe_kamar=?, harga_per_malam=?, status=? WHERE id=?',
             [nomor_kamar, tipe_kamar, harga_per_malam, status, id]
         );
+        
         res.redirect('/data_kamar');
     } catch (err) {
         console.error(err);
@@ -279,7 +328,6 @@ app.get('/data_reservasi', isLoggedIn, checkRole('admin'), async (req, res) => {
     try {
         const [reserves] = await db.execute("SELECT * FROM reservasi");
 
-        // Format tanggal sebelum dilempar ke EJS
         const dataWithFormat = reserves.map(r => ({
             ...r,
             checkin: formatDate(r.checkin),
@@ -332,13 +380,21 @@ app.get('/reservasi', isLoggedIn, checkRole('clients'), async(req, res) => {
     });
 });
 
-app.post('/reservasi', isLoggedIn, checkRole('clients'), upload.single('ktp'), async (req, res) => {
+app.post('/reservasi', isLoggedIn, checkRole('clients'), uploadKTP.single('ktp'), async (req, res) => {
     const { tanggal, nama, telepon, email, tipe_kamar, pembayaran, id_kamar} = req.body;
     const ktpFile = req.file;
+    const id_user = req.session.user.id;
 
     if (!ktpFile) {
         return res.send("<script>alert('Gagal mengunggah file KTP. Silakan coba lagi.'); window.location.href = '/reservasi';</script>");
     }
+
+    const [kamarRows] = await db.execute("SELECT harga_per_malam FROM kamar WHERE id = ?", [id_kamar]);
+    if (kamarRows.length === 0) {
+        return res.send("<script>alert('Kamar tidak ditemukan. Silakan coba lagi.'); window.location.href = '/dashboard';</script>");
+    }
+
+    const hargaPerMalam = kamarRows[0].harga_per_malam;
 
     let checkin = null;
     let checkout = null;
@@ -353,7 +409,15 @@ app.post('/reservasi', isLoggedIn, checkRole('clients'), upload.single('ktp'), a
         total_malam = diffTime / (1000 * 60 * 60 * 24);
     }
 
-    try { await db.execute('INSERT INTO reservasi (nama_lengkap, telepon, email, foto_ktp, checkin, checkout, total_malam, tipe_kamar, tipe_pembayaran, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [nama, telepon, email, ktpFile.filename, checkin, checkout, total_malam, tipe_kamar, pembayaran, "pending", new Date()]);
+    let totalBayar=0
+    
+    if (pembayaran === 'dp') {
+        totalBayar = hargaPerMalam * total_malam * 0.5;
+    } else {
+        totalBayar = hargaPerMalam * total_malam;
+    }
+
+    try { await db.execute('INSERT INTO reservasi (id_users, nama_lengkap, telepon, email, foto_ktp, checkin, checkout, total_malam, tipe_kamar, tipe_pembayaran, total_bayar, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [id_user, nama, telepon, email, ktpFile.filename, checkin, checkout, total_malam, tipe_kamar, pembayaran, totalBayar, "pending", new Date()]);
         await db.execute('UPDATE kamar SET status=? WHERE id=? AND status="empty" LIMIT 1', ["booked", id_kamar]);
         res.send("<script>alert('Reservasi Berhasil!'); window.location.href = '/dashboard';</script>");
     } catch (err) {
@@ -362,6 +426,17 @@ app.post('/reservasi', isLoggedIn, checkRole('clients'), upload.single('ktp'), a
     }
 });
 
+app.get('/history', isLoggedIn, checkRole('clients'), async (req, res) => {
+    const [history] = await db.execute("SELECT * FROM reservasi WHERE id_users = ? ORDER BY created_at DESC", [req.session.user.id]);
+
+    res.render('history/history', {
+        title: 'History Page',
+        pageClass: 'history-page',
+        user: req.session.user,
+        historyData: history,
+        formatDate
+    });
+});
 
 app.get('/logout', (req, res) => {
     req.session.destroy

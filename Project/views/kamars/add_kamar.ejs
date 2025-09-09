@@ -6,7 +6,7 @@
         
         <h2 class="text-center mb-4 fw-bold text-white">Tambah kamar</h2>
 
-        <form method="post" action="/data_kamar/add_kamar">
+        <form method="post" action="/data_kamar/add_kamar" enctype="multipart/form-data">
 
             <div class="mb-3 position-relative">
                 <label for="nomor_kamar" class="form-label text-white">Nomor Kamar</label>
@@ -37,15 +37,14 @@
                 <i class="fas fa-lock position-absolute" style="top: 38px; left: 15px; color: black;"></i>
             </div>
 
-            <!-- ini belum required -->
             <div class="mb-3 position-relative">
                 <label for="foto_kamar" class="form-label text-white">Upload Foto</label>
                 <input type="file" class="form-control ps-5" id="foto_kamar" name="foto_kamar" style="border-radius: 10px; padding: 12px;" accept="image/*">
             </div>
 
             <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary w-45" style="border-radius: 12px; font-weight: 600;">Submit</button>
                 <a href="/data_kamar" class="btn btn-light w-45" style="border-radius: 12px; font-weight: 600;">Cancel</a>
+                <button type="submit" class="btn btn-primary w-45" style="border-radius: 12px; font-weight: 600;">Submit</button>
             </div>
 
         </form>

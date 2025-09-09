@@ -1,12 +1,12 @@
 <%- include('../layout/navbar') %>
 
-<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(#3d2f14, #dbab51);">
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(#3d2f14, #dbab51); padding-top: 10%; padding-bottom: 10%;">
     <div class="card p-5 shadow-lg" 
          style="width: 400px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
         
         <h2 class="text-center mb-4 fw-bold text-white">Tambah kamar</h2>
 
-        <form method="post" action="/data_kamar/edit_kamar/<%= kamar.id %>">
+        <form method="post" action="/data_kamar/edit_kamar/<%= kamar.id %>" enctype="multipart/form-data">
 
             <div class="mb-3 position-relative">
                 <label for="nomor_kamar" class="form-label text-white">Nomor Kamar</label>
@@ -27,6 +27,23 @@
             </div>
 
             <div class="mb-3 position-relative">
+                <label for="foto_kamar" class="form-label text-white">Upload Foto</label>
+                <input type="file" class="form-control ps-5" id="foto_kamar" name="foto_kamar" style="border-radius: 10px; padding: 12px;" accept="image/*">
+            </div>
+
+            <div class="mb-3 text-center">
+                <label class="form-label text-white d-block">Foto Lama</label>
+                <% if (kamar.foto_kamar) { %>
+                    <img src="/uploads/kamar/<%= kamar.foto_kamar %>" 
+                        alt="Foto Kamar Lama" 
+                        class="img-thumbnail" 
+                        style="max-width: 200px; border-radius: 15px;">
+                <% } else { %>
+                    <p class="text-white">Belum ada foto</p>
+                <% } %>
+            </div>
+
+            <div class="mb-3 position-relative">
                 <label for="status" class="form-label text-white">Status Kamar</label>
                 <select name="status" id="status" class="form-control ps-5" required style="border-radius: 10px; padding: 12px;">
                     <% if (kamar.status == 'empty') { %>
@@ -40,8 +57,8 @@
             </div>
 
             <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary w-45" style="border-radius: 12px; font-weight: 600;">Submit</button>
                 <a href="/data_kamar" class="btn btn-light w-45" style="border-radius: 12px; font-weight: 600;">Cancel</a>
+                <button type="submit" class="btn btn-primary w-45" style="border-radius: 12px; font-weight: 600;">Submit</button>
             </div>
 
         </form>

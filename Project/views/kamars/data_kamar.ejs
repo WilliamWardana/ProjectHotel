@@ -18,6 +18,7 @@
                             <th>Nomor Kamar</th>
                             <th>Tipe Kamar</th>
                             <th>Harga per Malam</th>
+                            <th>Foto Kamar</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -28,8 +29,9 @@
                                 <tr>
                                     <td><%= i + 1 %></td>
                                     <td><%= kamar.nomor_kamar %></td>
-                                    <td><%= kamar.tipe_kamar.charAt(0).toUpperCase() + kamar.tipe_kamar.slice(1) %></td>
+                                    <td><%= kamar.tipe_kamar.toUpperCase() %></td>
                                     <td>Rp <%= kamar.harga_per_malam.toLocaleString('id-ID') %></td>
+                                    <td><img src="/uploads/kamar/<%= kamar.foto_kamar %>" alt="Foto Kamar" width="100"></td>
                                     <% if (kamar.status === 'empty') {%>
                                         <td><span class="badge bg-primary p-2">Tersedia</span></td>
                                     <% } else { %>
