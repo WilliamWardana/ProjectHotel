@@ -107,7 +107,7 @@ app.post('/login', async (req, res) => {
         res.redirect('/data_user');
     } else if (user.role == 'staff') {
         req.session.user = { id: user.id, username: user.username, role: user.role };
-        res.redirect('/staff');
+        res.redirect('/staff_page');
     } else {
         req.session.user = { id: user.id, username: user.username, role: user.role };
         res.redirect('/dashboard');
@@ -346,10 +346,6 @@ app.get('/data_reservasi', isLoggedIn, checkRole('admin'), async (req, res) => {
     }
 });
 
-app.get('/staff', isLoggedIn, checkRole('staff'), (req, res) => {
-    res.send("Selamat datang di halaman Staff!");
-});
-
 app.get('/dashboard', isLoggedIn, checkRole('clients'), async (req, res) => {
 
     const [kamar] = await db.execute("SELECT * FROM kamar WHERE status='empty'");
@@ -435,6 +431,23 @@ app.get('/history', isLoggedIn, checkRole('clients'), async (req, res) => {
         user: req.session.user,
         historyData: history,
         formatDate
+    });
+});
+
+app.get('/staff_page', isLoggedIn, checkRole('staff'), async (req, res) => {
+    const [reserves] = await db.execute("SELECT * FROM reservasi WHERE status='pending' OR status='checkin'");
+
+    const dataWithFormat = reserves.map(r => ({
+        ...r,
+        checkin: formatDate(r.checkin),
+        checkout: formatDate(r.checkout)
+    }));
+
+    res.render('staff_page', {
+        title: 'Staff Page',
+        pageClass: 'staff-page',
+        reservesData: dataWithFormat,
+        user: req.session.user,
     });
 });
 

@@ -1,0 +1,70 @@
+<%- include('../layout/navbar') %>
+
+<div class="history-wrapper py-5">
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center fw-bold text-white">History Reservasi</h2>
+
+    <div class="history-box p-4">
+      <% historyData.forEach(history => { %>
+        <div class="history-card p-4 mb-3 d-flex justify-content-between align-items-center text-white">
+          <div>
+            <h5 class="fw-bold mb-1"><%= history.tipe_kamar.toUpperCase() %>
+                <span class="badge bg-warning text-dark ms-2"><%= history.status %></span>
+            </h5>
+            <small class="text-white">Nama: <%= history.nama_lengkap %></small><br>
+            <small class="text-white">Check-in: <%= formatDate(history.checkin) %> | Check-out: <%= formatDate(history.checkout) %></small><br>
+            <small class="text-white">Tipe Pembayaran: <%= history.tipe_pembayaran.toUpperCase()%></small><br>
+          </div>
+          <div class="text-end">
+            <p class="mb-1 fw-semibold text-white">Rp <%= history.total_bayar.toLocaleString('id-ID') %></p>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .history-wrapper {
+    background: url('/img/background-main3.webp') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    position: relative;
+  }
+  .history-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+  }
+  .history-wrapper .container {
+    position: relative;
+    z-index: 2;
+  }
+  .history-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .history-box::-webkit-scrollbar {
+    display: none;
+  }
+  .history-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .history-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+</style>
