@@ -1,0 +1,133 @@
+<%- include('layout/navbar') %>
+
+<div class="data-kamar-wrapper py-5">
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center fw-bold text-white">Data Kamar</h2>
+
+    <div class="kamar-box p-4">
+      
+        <div class="table-responsive">
+            <table class="table align-middle text-white kamar-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nomor Kamar</th>
+                        <th>Tipe Kamar</th>
+                        <th>Harga per Malam</th>
+                        <th>Foto Kamar</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (kamarData && kamarData.length > 0) { %>
+                        <% kamarData.forEach((kamar, i) => { %>
+                            <tr class="table-row-glass">
+                                <td><%= i + 1 %></td>
+                                <td><span class="fw-bold"><%= kamar.nomor_kamar %></span></td>
+                                <td><%= kamar.tipe_kamar.toUpperCase() %></td>
+                                <td>Rp <%= kamar.harga_per_malam.toLocaleString('id-ID') %></td>
+                                <td><img src="/uploads/kamar/<%= kamar.foto_kamar %>" alt="Foto Kamar" class="img-thumbnail kamar-img"></td>
+                                <% if (kamar.status === 'empty') {%>
+                                    <td><span class="badge bg-success p-2">Tersedia</span></td>
+                                <% } else { %>
+                                    <td><span class="badge bg-warning text-dark p-2">Terisi</span></td>
+                                <% } %>
+                                <td>
+                                    <a href="/data_kamar/edit_kamar/<%= kamar.id %>" class="btn btn-sm btn-info text-white me-1">Edit</a>
+                                    <a href="/data_kamar/delete_kamar/<%= kamar.id %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin mau hapus?')">Delete</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="7" class="text-center text-white p-3">Belum ada data kamar</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+  </div>
+</div>
+
+<style>
+  .data-kamar-wrapper {
+    background: url('/img/background-main3.webp') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  .data-kamar-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+  }
+
+  .data-kamar-wrapper .container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .kamar-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .kamar-box::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .kamar-table {
+    --bs-table-bg: transparent;
+    --bs-table-color: white;
+  }
+
+  .kamar-table th {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    padding: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .kamar-table tbody tr {
+    transition: background-color 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .kamar-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .kamar-img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: transform .2s ease;
+  }
+
+  .kamar-img:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-custom {
+    background-color: #dbab51;
+    border-color: #dbab51;
+    transition: background-color .2s ease;
+  }
+  .btn-custom:hover {
+    background-color: #c99c43;
+    border-color: #c99c43;
+  }
+</style>

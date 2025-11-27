@@ -154,7 +154,7 @@ app.post('/data_user/add_user', isLoggedIn, checkRole('admin'), async (req, res)
 app.get('/data_user/edit_user/:id', isLoggedIn, checkRole('admin'), async (req, res) => {
   try {
     const [rows] = await db.execute(
-      'SELECT * FROM users WHERE id = ?',
+      'SELECT * FROM users WHERE id = ? LIMIT 1',
       [req.params.id]
     );
 
@@ -166,7 +166,6 @@ app.get('/data_user/edit_user/:id', isLoggedIn, checkRole('admin'), async (req, 
       title: 'Edit User Page',
       user: rows[0],
       pageClass: 'edit-user-page',
-      user: req.session.user,
     });
   } catch (err) {
     console.error(err);
@@ -177,13 +176,12 @@ app.get('/data_user/edit_user/:id', isLoggedIn, checkRole('admin'), async (req, 
 app.post('/data_user/edit_user/:id', isLoggedIn, checkRole('admin'), async (req, res) => {
     const { username, password, role } = req.body;
     const { id } = req.params;
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     if (!password) {
         try {
             await db.execute(
-                'UPDATE users SET username=?, role=? WHERE id=?',
-                [username, role, id]
+                'UPDATE users SET role=? WHERE id=?',
+                [role, id]
             );
             res.redirect('/data_user');
         } catch (err) {
@@ -191,9 +189,11 @@ app.post('/data_user/edit_user/:id', isLoggedIn, checkRole('admin'), async (req,
             res.status(500).send("Terjadi kesalahan server");
         }
     } else {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
         try {
             await db.execute(
-                'UPDATE users SET username=?, password=?, role=? WHERE id=?',
+                'UPDATE users SET username=?, password=?, role=?, updated_at=NOW() WHERE id=?',
                 [username, hashedPassword, role, id]
             );
             res.redirect('/data_user');
@@ -237,7 +237,7 @@ app.get('/data_kamar/add_kamar', isLoggedIn, checkRole('admin'), async (req, res
 });
 
 app.post('/data_kamar/add_kamar', isLoggedIn, checkRole('admin'), uploadKamar.single('foto_kamar'), async (req, res) => {
-    const { nomor_kamar, tipe_kamar, harga_per_malam, } = req.body;
+    const { nomor_kamar, tipe_kamar, harga_per_malam, deskripsi } = req.body;
     const fotoKamar = req.file;
 
     if (!fotoKamar) {
@@ -253,7 +253,7 @@ app.post('/data_kamar/add_kamar', isLoggedIn, checkRole('admin'), uploadKamar.si
     const tipeKamar = rows[0].tipe_kamar;
 
     try {
-        await db.execute('INSERT INTO kamar (nomor_kamar, tipe_kamar, harga_per_malam, foto_kamar, created_at) VALUES (?, ?, ?, ?, ?)', [nomor_kamar, tipeKamar, harga_per_malam, fotoKamar.filename, new Date()]);
+        await db.execute('INSERT INTO kamar (nomor_kamar, tipe_kamar, harga_per_malam, deskripsi, foto_kamar, created_at) VALUES (?, ?, ?, ?, ?, ?)', [nomor_kamar, tipeKamar, harga_per_malam, deskripsi, fotoKamar.filename, new Date()]);
         res.redirect('/data_kamar');
     } catch (err) {
         console.error(err);
@@ -289,7 +289,7 @@ app.post('/data_kamar/edit_kamar/:id', isLoggedIn, checkRole('admin'), uploadKam
     if (fotoKamar) {
         try {
             await db.execute(
-                'UPDATE kamar SET nomor_kamar=?, tipe_kamar=?, harga_per_malam=?, foto_kamar=?, status=? WHERE id=?',
+                'UPDATE kamar SET nomor_kamar=?, tipe_kamar=?, harga_per_malam=?, foto_kamar=?, status=?, updated_at=NOW() WHERE id=?',
                 [nomor_kamar, tipe_kamar, harga_per_malam, fotoKamar.filename, status, id]
             );
             return res.redirect('/data_kamar');
@@ -301,7 +301,7 @@ app.post('/data_kamar/edit_kamar/:id', isLoggedIn, checkRole('admin'), uploadKam
 
     try {
         await db.execute(
-            'UPDATE kamar SET nomor_kamar=?, tipe_kamar=?, harga_per_malam=?, status=? WHERE id=?',
+            'UPDATE kamar SET nomor_kamar=?, tipe_kamar=?, harga_per_malam=?, status=?, updated_at=NOW() WHERE id=?',
             [nomor_kamar, tipe_kamar, harga_per_malam, status, id]
         );
         
@@ -391,7 +391,6 @@ app.post('/reservasi', isLoggedIn, checkRole('clients'), uploadKTP.single('ktp')
     }
 
     const hargaPerMalam = kamarRows[0].harga_per_malam;
-
     let checkin = null;
     let checkout = null;
     let total_malam = 0;
@@ -447,6 +446,16 @@ app.get('/staff_page', isLoggedIn, checkRole('staff'), async (req, res) => {
         title: 'Staff Page',
         pageClass: 'staff-page',
         reservesData: dataWithFormat,
+        user: req.session.user,
+    });
+});
+
+app.get('/data_kamar_staff', isLoggedIn, checkRole('staff'), async (req, res) => {
+    const [kamar] = await db.execute("SELECT * FROM kamar");
+    res.render('data_kamar', {
+        title: 'Data Kamar',
+        pageClass: 'data-kamar-page',
+        kamarData: kamar,
         user: req.session.user,
     });
 });

@@ -1,18 +1,18 @@
-<%- include('../layout/navbar') %>
+<%- include('layout/navbar') %>
 
 <div class="history-wrapper py-5">
   <div class="container mt-5">
     <h2 class="mb-4 text-center fw-bold text-white">History Reservasi</h2>
 
     <div class="history-box p-4">
-      <% historyData.forEach(history => { %>
+      <% reservesData.forEach(history => { %>
         <div class="history-card p-4 mb-3 d-flex justify-content-between align-items-center text-white">
           <div>
             <h5 class="fw-bold mb-1"><%= history.tipe_kamar.toUpperCase() %>
                 <span class="badge bg-warning text-dark ms-2"><%= history.status %></span>
             </h5>
             <small class="text-white">Nama: <%= history.nama_lengkap %></small><br>
-            <small class="text-white">Check-in: <%= formatDate(history.checkin) %> | Check-out: <%= formatDate(history.checkout) %></small><br>
+            <small class="text-white">Check-in: <%= history.checkin %> | Check-out: <%= history.checkout %></small><br>
             <small class="text-white">Tipe Pembayaran: <%= history.tipe_pembayaran.toUpperCase()%></small><br>
           </div>
           <div class="text-end">
