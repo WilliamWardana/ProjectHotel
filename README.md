@@ -100,3 +100,12 @@ Jalankan proyek dengan:
 *Menggunakan `npm`*
 ```bash
 npm start
+```
+
+## Balsamiq
+
+Cek design balsamiq dengan:
+
+*Menggunakan link*
+```bash
+https://balsamiq.cloud/s1z3zns/p73uiwu
