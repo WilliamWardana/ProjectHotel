@@ -65,7 +65,6 @@ This project empowers developers to build reliable, secure, and user-friendly sc
 
 To successfully run this project, ensure you have the following dependencies:
 
-* `Programming Language`: Python
 * `Package Manager`: npm
 
 ### Installation
@@ -109,3 +108,4 @@ Cek design balsamiq dengan:
 *Menggunakan link*
 ```bash
 https://balsamiq.cloud/s1z3zns/p73uiwu
+
